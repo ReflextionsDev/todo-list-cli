@@ -39,6 +39,7 @@ function menu() {
         input = Number(prompt('Invalid Input, enter 1 or 2: '))
     }
 
+    // Add exit option
 
     // Actions
     if (input === 1) {
@@ -71,16 +72,49 @@ function listItems(arr) {
 
 function createItem() {
     console.log('\n' + "~ Creating a new to-do item ~" + '\n' + "What is this to-do item called?")
-    newItem = prompt('')
-    items.push([newItem, 0])
+    input = prompt('')
+    items.push([input, 0])
     menu()
 }
 
 function completeItem(num) {
 
-    inputOptions = [1, 2]
+
+    console.log('\n' + "~ Completing a to-do item ~" + '\n' + "Which to-do item would you like to complete ?")
+    input = Number(prompt(''))
 
 
+
+
+
+
+
+
+    // Assemble valid inputs
+    inputOptions = []
+
+    for (let i = 0; i < items.length; i++) {
+        inputOptions.push(i + 1)
+    }
+
+
+        // could make new function?
+    // Get item number
+
+
+        // Error Handling
+
+
+            // could also test if item is already added
+
+    while (!(inputOptions.includes(input))) {
+        input = Number(prompt("Invalid input, enter an item number: "))
+    }
+
+    items[input - 1][1] = 1
+
+
+    menu()
 }
 
 
