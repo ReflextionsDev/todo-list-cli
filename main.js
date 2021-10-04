@@ -1,9 +1,11 @@
 // Terminal based to-do program
 
+// Variables
 const prompt = require('prompt-sync')({ sigint: true })
 let items = [], menuActionsText = [], menuActions = [], inputOptions = []
 let input, listEmpty
 
+// Init
 console.log('\n' + "Welcome to the To-Do List Manager Application!")
 menu()
 
@@ -41,6 +43,7 @@ function menu() {
 
     // Display Action Menu
     console.log('\n')
+
     for (let i = 0; i < menuActionsText.length; i++) {
         console.log('[' + (i + 1) + ']' + menuActionsText[i])
     }
@@ -132,7 +135,6 @@ function getItem(str) {
     setInputOptions('items')
     checkInput("Invalid input, enter an item number: ")
 }
-
 
 // Item Functions
 
