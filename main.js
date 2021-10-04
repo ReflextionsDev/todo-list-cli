@@ -7,17 +7,12 @@
 // Tell the user if they entered an invalid action
 
 
-// 2D array to track items and status
-
 const prompt = require('prompt-sync')({ sigint: true })
 
-
-
 // const items = []
-
-
 const items = [['Do the dishes', 0], ['Buy a jetski', 1], ['Post bail', 0]]
 
+const inputOptions = [1,2]
 
 
 intro();
@@ -41,6 +36,13 @@ function menu() {
     // Action Menu
     console.log('\n' + "~ Select an action ~" + '\n' + "[1] Create a to-do item" + '\n' + '[2] Complete a to-do item')
     let input = Number(prompt('Selection: '))
+    
+
+    //Error Handling
+    while (!(inputOptions.includes(input))) {
+        input = Number(prompt('Invalid Input, enter 1 or 2: '))
+    }
+
 }
 
 
