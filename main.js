@@ -1,58 +1,112 @@
-// You must make at least three commits in git while working on this project (make a commit everytime you get a new thing working)
-// The user is able to add new to-do items
-// A list of to-do items is displayed to the user
-//     The number of to-do items is displayed to the user
-//     If the user has no to-do items, this should be indicated to the user
-// The user is able to set existing to-do items as complete
-// Tell the user if they entered an invalid action
-
+// Terminal based to-do program
 
 const prompt = require('prompt-sync')({ sigint: true })
+let items = [], menuActionsText = [], menuActions = [], inputOptions = []
+let input, listEmpty
 
-// const items = []
-const items = [['Do the dishes', 0], ['Buy a jetski', 1], ['Post bail', 0]]
-let input
-let inputOptions = [1, 2]
-
-console.log("Welcome to the To-Do List Manager Application!", '\n')
+console.log('\n' + "Welcome to the To-Do List Manager Application!")
 menu()
 
+// Navigation
 
 function menu() {
 
+    console.log('\n' + '==============================================' + '\n')
+
     // List Items
     if (items.length === 0) {
+        listEmpty = true
         console.log('Your to-do list is empty.')
     } else {
+        listEmpty = false
         console.log('You have ' + items.length + ' to-do item(s).')
         listItems(items)
     }
 
-    // Action Menu
-    console.log('\n' + "~ Select an action ~" + '\n' + "[1] Create a to-do item" + '\n' + '[2] Complete a to-do item')
+    // Build Action Menu
+
+    menuActions = []
+    menuActionsText = []
+
+    menuActionsText.push("Create a to-do item")
+    menuActions.push('create')
+
+    if (!listEmpty) {
+        menuActionsText.push("Complete a to-do item", "Uncomplete a to-do item", "Edit a to-do item", "Delete a to-do item")
+        menuActions.push('complete', 'uncomplete', 'edit', 'delete')
+    }
+
+    menuActionsText.push("Exit program")
+    menuActions.push('exit')
+
+    // Display Action Menu
+    console.log('\n')
+    for (let i = 0; i < menuActionsText.length; i++) {
+        console.log('[' + (i + 1) + ']' + menuActionsText[i])
+    }
+
+    // Get input
     input = Number(prompt('Selection: '))
+    setInputOptions('menu')
+    checkInput("Invalid Input, enter a menu number: ")
 
-
-    //Error Handling
-    inputOptions = [1, 2]
-    while (!(inputOptions.includes(input))) {
-        input = Number(prompt('Invalid Input, enter 1 or 2: '))
-    }
-
-    // Add exit option
-
-    // Actions
-    if (input === 1) {
-        createItem()
-    }
-    else if (input === 2) {
-        completeItem()
-    }
-    else {
-        console.log("Program error: invalid input accepted.")
+    // Choose Action
+    let choice = menuActions[input - 1]
+    switch (choice) {
+        case "create":
+            createItem()
+            break;
+        case "exit":
+            exitProgram()
+            break;
+        case "complete":
+            completeItem()
+            break;
+        case "uncomplete":
+            uncompleteItem()
+            break;
+        case "edit":
+            editItem()
+            break;
+        case "delete":
+            deleteteItem()
+            break;
+        default:
+            console.log("Program error: invalid input accepted.")
+            break;
     }
 }
 
+function exitProgram() {
+    console.log("Closing...")
+}
+
+// Utility Functions
+// Could combine checkInput w/ SetInputOptions
+
+function checkInput(str) {
+    while (!(inputOptions.includes(input))) {
+        input = Number(prompt(str))
+    }
+}
+
+function setInputOptions(str) {
+
+    inputOptions = []
+
+    if (str === 'menu') {
+        for (let i = 0; i < menuActions.length; i++) {
+            inputOptions.push(i + 1)
+        }
+    }
+    else if (str === 'items') {
+        for (let i = 0; i < items.length; i++) {
+            inputOptions.push(i + 1)
+        }
+    } else {
+        console.log('Program error: Invalid input option specified.')
+    }
+}
 
 function listItems(arr) {
     for (let i = 0; i < arr.length; i++) {
@@ -69,57 +123,70 @@ function listItems(arr) {
     }
 }
 
+function getItem(str) {
+    // Input Prompt
+    console.log(str)
+    input = Number(prompt(''))
+
+    // Input Validation
+    setInputOptions('items')
+    checkInput("Invalid input, enter an item number: ")
+}
+
+
+// Item Functions
 
 function createItem() {
+
+    // Input Prompt
     console.log('\n' + "~ Creating a new to-do item ~" + '\n' + "What is this to-do item called?")
     input = prompt('')
+
+    // Create Item
     items.push([input, 0])
     menu()
 }
 
 function completeItem(num) {
 
+    // Input Prompt
+    getItem(String('\n' + "~ Completing a to-do item ~" + '\n' + "Which to-do item would you like to complete?"))
 
-    console.log('\n' + "~ Completing a to-do item ~" + '\n' + "Which to-do item would you like to complete ?")
-    input = Number(prompt(''))
-
-
-
-
-
-
-
-
-    // Assemble valid inputs
-    inputOptions = []
-
-    for (let i = 0; i < items.length; i++) {
-        inputOptions.push(i + 1)
-    }
-
-
-        // could make new function?
-    // Get item number
-
-
-        // Error Handling
-
-
-            // could also test if item is already added
-
-    while (!(inputOptions.includes(input))) {
-        input = Number(prompt("Invalid input, enter an item number: "))
-    }
-
+    // Complete Item
     items[input - 1][1] = 1
+    menu()
 
+}
 
+function uncompleteItem(num) {
+
+    // Input Prompt
+    getItem(String('\n' + "~ Uncompleting a to-do item ~" + '\n' + "Which to-do item would you like to uncomplete?"))
+
+    // Complete Item
+    items[input - 1][1] = 0
+    menu()
+
+}
+
+function editItem() {
+
+    // Input Prompt
+    getItem(String('\n' + "~ Editing a to-do item ~" + '\n' + "Which to-do item would you like to edit?"))
+
+    // Edit Item
+    console.log('\n' + "Previous Text: " + items[input - 1][0] + '\n' + "New Text:")
+    let newText = prompt('')
+    items[input - 1][0] = newText
     menu()
 }
 
+function deleteteItem() {
 
+    // Input Prompt
+    getItem(String('\n' + "~ Deleting a to-do item ~" + '\n' + "Which to-do item would you like to delete?"))
 
-
-
-
-inputOptions = [1, 2]
+    // Delete Item
+    items.splice(input - 1, 1)
+    menu()
+}
